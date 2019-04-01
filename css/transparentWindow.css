@@ -1,0 +1,8 @@
+#transparentWindow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #e6f2ff;
+  border: 4px solid #000000;
+  opacity: 0.2;
+}

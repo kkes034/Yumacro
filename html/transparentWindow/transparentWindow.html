@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" href="../../css/index.css" />
+<link rel="stylesheet" href="../../css/transparentWindow.css" />
+<script src="../../angular-1.7.7/angular.min.js" type="text/javascript"></script>
+<script src="../../node_modules/ng-draggable/ngDraggable.js"
+	type="text/javascript"></script>
+<script src="../../js/detailPageMenu/detailPageMenu.js"
+	type="text/javascript"></script>
+<script src="../../localDataStorage/localDataStorage-1.2.0.min.js"></script>
+<script src="../../js/transparentWindow/transparentWindow.js"></script>
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+</head>
+<body ng-app="transparentModel" ng-controller="userCtrl"
+	style="width: 100%; height: 100%; margin: 0px 0px 0px 0px">
+	<div id="transparentDragBar"
+		style="background-color: #e0e0eb; width: 100%; height: 20px; -webkit-app-region: drag">
+		<button id="dragBarButton"
+			ng-mouseleave="transparentBarMouseLeave(button, event)"
+			ng-mouseenter="transparentBarMouseOver(button, event)"
+			ng-click="transparentBarMouseClick(button, event)"
+			style="background-color: #e0e0eb; color: #3377ff; text-align: center; line-height: 14px; font-size: 13px; -webkit-app-region: no-drag">YuMacro</button>
+		<button type="button"
+			onclick="window.close();"
+			style="background-color: #e0e0eb; float: right; color: #3377ff; text-align: center; line-height: 14px; font-size: 13px; -webkit-app-region: no-drag">X</button>
+	</div>
+	<div id="transparentWindow" ng-click="transparentWindowClick($data, $event)" style="height: 90%"></div>
+</body>
+
+<script>
+	scenarioProcessingCore();
+</script>
+
+</html>

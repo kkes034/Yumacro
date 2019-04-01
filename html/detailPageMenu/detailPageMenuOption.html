@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>YuMacro</title>
+
+<link rel="stylesheet" href="../../css/index.css" />
+<script src="../../angular-1.7.7/angular.min.js" type="text/javascript"></script>
+<script src="../../js/detailPageMenu/detailPageMenuOption.js"
+	type="text/javascript"></script>
+<script src="../../js/detailPageMenu/detailMouseClickOption.js"
+	type="text/javascript"></script>
+<script src="../../localDataStorage/localDataStorage-1.2.0.min.js"></script>
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+
+
+<body ng-app="detailOptionModel" ng-controller="userCtrl">
+	<h1 style="font-size: 10px">옵션설정</h1>
+	<center>
+		<div id="optionContextContainer"
+			style="height: 300px; width: 90%; background-color: #e0e0eb"></div>
+	</center>
+
+
+	<button id="saveActionButton"
+		ng-click="saveActionButton($actionX, $actionY)"
+		style="margin-left: 140px; margin-top: 10px">Save</button>
+	<button id="cancelActionButton" ng-click="cancelActionButton()">Cancel</button>
+	<br>
+
+	<br>
+</body>
+
+<script>
+	var clickHTML = '<body style="width: 100%">'
+			+ '<br>'
+			+ '<button id="mousePositionSelector" ng-click="mousePositionSelect($data, $event)">Click here to define the click position</button>'
+			+ '<form>	x좌표 : <input type="text" ng-model="actionX"> </form>'
+			+ '<form>	y좌표 : <input type="text" ng-model="actionY"> </form>'
+			+ '<br>' + '</body>';
+	// jquery 사용은 가급적 피한다 ; jqery는 구시대 html의 기능에 보완제 역할을 하였고 html이 발전하면서 필요 없어짐
+	document.getElementById("optionContextContainer").innerHTML = clickHTML;
+
+	//event. layerX-offsetX, event. layerY-offsetY
+</script>
+
+
+</html>

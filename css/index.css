@@ -1,0 +1,18 @@
+#div1 {
+	width: 350px;
+	height: 70px;
+	padding: 10px;
+	border: 1px solid #aaaaaa;
+}
+
+table#indexBasicTable {
+  border: 3px solid black;
+  border-collapse: collapse;
+}
+
+
+table#indexBasicTable th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 5px;
+}

@@ -1,0 +1,15 @@
+{
+  "name": "yumacro",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ng-draggable": "^1.0.0",
+    "robotjs": "^0.5.1"
+  }
+}

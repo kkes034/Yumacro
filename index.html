@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>YuMacro</title>
+
+<link rel="stylesheet" href="css/index.css" />
+<script src="angular-1.7.7/angular.min.js" type="text/javascript"></script>
+<script src="node_modules/ng-draggable/ngDraggable.js"
+	type="text/javascript"></script>
+<script src="index.js" type="text/javascript"></script>
+<script src="myUsers.js" type="text/javascript"></script>
+<script src="localDataStorage/localDataStorage-1.2.0.min.js"></script>
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+
+
+<body ng-app="myApp" ng-controller="userCtrl">
+	<h1 style="font-size: 10px">저장된 파일이름</h1>
+	<table id="indexBasicTable" style="width: 100%">
+		<tr>
+			<th style="text-align: center;">Idx</th>
+			<th style="text-align: center;">Category</th>
+			<th style="text-align: center;">Edit</th>
+		</tr>
+		<tr ng-repeat="i in category">
+			<td style="text-align: center;"><input type="checkbox" value="">
+			</td>
+			<td style="text-align: center;">{{ i.title }}</td>
+			<td style="text-align: center;"><button class="w3-btn w3-ripple"
+					ng-click="openScenario(i.title)">&#9998; Edit</button></td>
+		</tr>
+	</table>
+
+
+</body>
+
+<script>
+	
+	const remote = require('electron').remote;
+	const remoteWindow = remote.BrowserWindow;
+	//localStorage 초기화
+	localStorage.clear();
+	//localDataStorage 초기화 (localDataStorage API 참조)
+	localData = localDataStorage( 'passphrase.life' );
+	localData.clear();
+	localStorage.setItem("scenarioStartFlag", "false");
+	localStorage.setItem("scenarioStopFlag", "false");
+	
+	var tpWindow = new remoteWindow({
+		width : 500,
+		height : 350,
+		'node-integration' : true,
+		frame : false,
+		transparent : true,
+		alwaysOnTop : true
+	})
+	
+	tpWindow.setIgnoreMouseEvents(false)
+	
+	tpWindow.loadURL(url.format({
+		pathname : path.join(__dirname,
+				'html/transparentWindow/transparentWindow.html'),
+		protocol : 'file:',
+		slashes : true
+	}))
+	
+	tpWindow.webContents.openDevTools();
+
+	
+	
+</script>
+
+</html>
