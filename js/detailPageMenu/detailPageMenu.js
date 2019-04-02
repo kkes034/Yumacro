@@ -62,8 +62,21 @@ DETAILMODEL
 				delay : 1
 			} ];
 
-		 	localData = localDataStorage('passphrase.life');
-		 	localData.set("scenario", $scope.users);
+			localData = localDataStorage('passphrase.life');
+			localData.set("scenario", $scope.users);
+			
+			$scope.colorReset = function() {
+				var j = 0;
+				for (j; j<$scope.users.length; j++) {
+					document.getElementById("detailCell_"
+							+ $scope.users[j].id).style.backgroundColor = "#e0e0eb";						
+				}
+			};
+
+			$scope.goToLink = function(index) {
+				$scope.colorReset();
+				document.getElementById("detailCell_"+index.id).style.backgroundColor = "#e6e600";
+			};
 			
 			$scope.editOption = function(id) {
 				localStorage.setItem("targetId",id);
@@ -80,59 +93,71 @@ DETAILMODEL
 				var usersLength = $scope.users.length;
 				$scope.dropId = dropId; // 이후에 dialog에서 값을 가져오기 위함
 				var a = DETAILMODEL.controller.$scope;
-				if (event.data.actionFlag == false) { // 시나리오만 수정할 때
-					if (event.data.id < idx) {
-						var i = event.data.id + 1;
-						for (i; i <= idx; i++) {
-							$scope.users[i].id = $scope.users[i].id - 1;
+				
+				if (event.x > window.innerWidth*0.7) {
+					var i = data.id + 1;
+					for (i; i < usersLength; i++) {
+						$scope.users[i].id = $scope.users[i].id - 1;
+					}
+					$scope.users.splice(data.id,1);					
+				} 
+				else {
+					if (event.data.actionFlag == false) { // 시나리오만 수정할 때
+						if (event.data.id < idx) {
+							var i = event.data.id + 1;
+							for (i; i <= idx; i++) {
+								$scope.users[i].id = $scope.users[i].id - 1;
+							}
+							$scope.users[event.data.id].id = dropId;
+						} else if (event.data.id > idx) {
+							var i = dropId;
+							for (i; i < event.data.id; i++) {
+								$scope.users[i].id = $scope.users[i].id + 1;
+							}
+							$scope.users[event.data.id].id = dropId;
+						} else {
+							return;
 						}
-						$scope.users[event.data.id].id = dropId;
-					} else if (event.data.id > idx) {
-						var i = dropId;
-						for (i; i < event.data.id; i++) {
+					} else { // 새 action을 시나리오에 추가할 때
+						var i = dropId + 1;
+						for (i; i < usersLength; i++) {
 							$scope.users[i].id = $scope.users[i].id + 1;
 						}
-						$scope.users[event.data.id].id = dropId;
-					} else {
-						return;
-					}
-				} else { // 새 action을 시나리오에 추가할 때
-					var i = dropId + 1;
-					for (i; i < usersLength; i++) {
-						$scope.users[i].id = $scope.users[i].id + 1;
-					}
-					$scope.users[usersLength] = {};
-					$scope.users[usersLength].id = dropId + 1;
-					$scope.users[usersLength].name = event.data.name;
-					$scope.users[usersLength].action = event.data.action;
-					$scope.users[usersLength].actionFlag = false;
+						$scope.users[usersLength] = {};
+						$scope.users[usersLength].id = dropId + 1;
+						$scope.users[usersLength].name = event.data.name;
+						$scope.users[usersLength].action = event.data.action;
+						$scope.users[usersLength].actionFlag = false;
 
-					// action에 따라서 객체 할당 (mouse일 때 actionX actionY, move일 때 toMove, delay일 때 delay)
-					switch (event.data.action) {
-					case "click":
-						$scope.users[usersLength].actionX = event.data.actionX;
-						$scope.users[usersLength].actionY = event.data.actionY;
-					case "move":
-						$scope.users[usersLength].toMove = event.data.toMove;
+						// action에 따라서 객체 할당 (mouse일 때 actionX actionY, move일 때 toMove, delay일 때 delay)
+						switch (event.data.action) {
+						case "click":
+							$scope.users[usersLength].actionX = event.data.actionX;
+							$scope.users[usersLength].actionY = event.data.actionY;
+						case "move":
+							$scope.users[usersLength].toMove = event.data.toMove;
+							break;
+						case "timeDelay":
+							$scope.users[usersLength].delay = event.data.delay;
+							break;
+						default:
+							console.log("지원하지 않습니다");
 						break;
-					case "timeDelay":
-						$scope.users[usersLength].delay = event.data.delay;
-						break;
-					default:
-						console.log("지원하지 않습니다");
-					break;
-					}					
-					showDialog();
+						}					
+						showDialog();
+					}
+					
 				}
+
 				sortingArray();
-			 	localData = localDataStorage('passphrase.life');
-			 	localData.set("scenario",$scope.users);
+				localData = localDataStorage('passphrase.life');
+				localData.set("scenario",$scope.users);
 			};
 
 			$scope.saveActionName = function(actionName) {
 				$scope.users[$scope.dropId + 1].name = actionName;
-			 	localData = localDataStorage('passphrase.life');
-			 	localData.set("scenario",$scope.users);
+				localData = localDataStorage('passphrase.life');
+				localData.set("scenario",$scope.users);
 				closeDialog();
 			};
 
@@ -147,6 +172,7 @@ DETAILMODEL
 			};
 
 			$scope.startScenario = function() {
+				$scope.colorReset();
 				localStorage.setItem("scenarioStartFlag", "true");
 
 				var i = 0;
@@ -194,7 +220,7 @@ DETAILMODEL
 //				}
 //				timeDelayInterval();
 			};
-			
+
 			$scope.countScenario = function(i,colorSwitch) {
 				if (i !== 0) {
 					document.getElementById("detailCell_"
@@ -207,7 +233,7 @@ DETAILMODEL
 				else {
 				}
 			};
-			
+
 			$scope.stopScenario = function(data, event) {
 				localData = localDataStorage( 'passphrase.life' );
 				localStorage.setItem("scenarioStopFlag", "true");

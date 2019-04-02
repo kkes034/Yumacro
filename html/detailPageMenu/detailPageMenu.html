@@ -27,7 +27,7 @@
 				<th>name</th>
 			</tr>
 			<tr id="detailCell_{{index.id}}" ng-repeat="index in users"
-				ng-dblclick="editOption(index.id)" ng-drag="true"
+				ng-click="goToLink(index)" ng-dblclick="editOption(index.id)" ng-drag="true"
 				ng-drag-data="index" ng-drop="true"
 				ng-drop-success="detailDropComplete($index,$data,$event)"
 				bgcolor="#e0e0eb">
