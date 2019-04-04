@@ -42,11 +42,20 @@ TRANSPARENTMODEL.controller('userCtrl', function($scope) {
 		if (localStorage.getItem("clickPositionFlag") == "true") {
 			localStorage.setItem("clickPositionFlag", "false");
 			var position = robot.getMousePos();
-			localStorage.setItem("actionX",position.x);
-			localStorage.setItem("actionY",position.y);
+			var screen = {
+				width : window.screen.width,
+				height : window.screen.height,	
+			};
+			var robotScreen = robot.getScreenSize();
+			var windowLeft = window.screenLeft/screen.width*robotScreen.width;
+			var windowTop = window.screenTop/screen.height*robotScreen.height;
+			var positionX = position.x - windowLeft;
+			var positionY = position.y - windowTop;
+			localStorage.setItem("actionX",positionX);
+			localStorage.setItem("actionY",positionY);
 		}
 		else {
-			console.log("no_click!!!!!");					
+			console.log("no_click!!!!!");
 		}
 	}
 
@@ -87,22 +96,22 @@ function scenarioProcessingCore() {
 function countScenario(eachScenario) {
 	var robot = require("robotjs");
 	robot.setMouseDelay(2);
-	var screenSize = robot.getScreenSize();
-	console.log("screenSize = " + screenSize);
-	var height = (screenSize.height / 2) - 10;
-	console.log("height = " + height);
-	var width = screenSize.width;
-	console.log("width = " + width);
 
 	switch (eachScenario.action) {
 	case "click":
-		var x = 800;
-		var y = 600;
+		var screen = {
+			width : window.screen.width,
+			height : window.screen.height,	
+		};
+		var robotScreen = robot.getScreenSize();
+		var windowLeft = window.screenLeft/screen.width*robotScreen.width;
+		var windowTop = window.screenTop/screen.height*robotScreen.height;
+		var x = parseInt(eachScenario.actionX) + windowLeft;
+		var y = parseInt(eachScenario.actionY) + windowTop;
 		robot.moveMouse(x, y);
 		robot.mouseClick();
 //		click(15,95);
 //		console.log("click(x,y)");
-
 		break;
 	case "move":
 		console.log("move");
@@ -115,18 +124,3 @@ function countScenario(eachScenario) {
 	break;
 	}
 }	
-
-function click(x,y) {
-	var ev = document.createEvent("MouseEvent");
-	var el = document.elementFromPoint(x,y);
-	ev.initMouseEvent(
-			"click",
-			true /* bubble */, true /* cancelable */,
-			window, null,
-			x, y, 0, 0, /* coordinates */
-			false, false, false, false, /* modifier keys */
-			0 /* left */, null
-	);
-	el.dispatchEvent(ev);
-	return el;
-}

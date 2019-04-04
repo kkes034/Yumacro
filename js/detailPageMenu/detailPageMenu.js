@@ -158,6 +158,7 @@ DETAILMODEL
 				$scope.users[$scope.dropId + 1].name = actionName;
 				localData = localDataStorage('passphrase.life');
 				localData.set("scenario",$scope.users);
+				$scope.name = '';
 				closeDialog();
 			};
 
@@ -237,7 +238,6 @@ DETAILMODEL
 			$scope.stopScenario = function(data, event) {
 				localData = localDataStorage( 'passphrase.life' );
 				localStorage.setItem("scenarioStopFlag", "true");
-				console.log("click event activated");
 			};
 
 			function showDialog() {

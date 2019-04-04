@@ -16,3 +16,18 @@ table#indexBasicTable th, td {
   border-collapse: collapse;
   padding: 5px;
 }
+/* 스크롤을 따라다니는 element */
+#floatdiv {
+	position:fixed; _position:absolute; _z-index:-1;
+	overflow:hidden;
+	right:0px;
+	top:55px;
+	margin:0;
+	padding:0;
+}
+
+#myDialog {
+	position:fixed; _position:absolute; _z-index:-1;
+	overflow:hidden;
+	top:155px;
+}
