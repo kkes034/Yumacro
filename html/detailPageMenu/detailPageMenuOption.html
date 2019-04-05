@@ -11,7 +11,8 @@
 	type="text/javascript"></script>
 <script src="../../js/detailPageMenu/detailMouseClickOption.js"
 	type="text/javascript"></script>
-<script src="../../node_modules/localDataStorage/localDataStorage-1.2.0.min.js"></script>
+<script
+	src="../../node_modules/localDataStorage/localDataStorage-1.2.0.min.js"></script>
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
 
@@ -40,10 +41,32 @@
 			+ '<form>	x좌표 : <input type="text" ng-model="actionX"> </form>'
 			+ '<form>	y좌표 : <input type="text" ng-model="actionY"> </form>'
 			+ '<br>' + '</body>';
-	// jquery 사용은 가급적 피한다 ; jqery는 구시대 html의 기능에 보완제 역할을 하였고 html이 발전하면서 필요 없어짐
-	document.getElementById("optionContextContainer").innerHTML = clickHTML;
+	var moveHTML = '<body style="width: 100%">'
+			+ '<br>'
+			+ '<form>	Insert the row number which you want to move <input type="text" ng-model="moveNum"> </form>'
+			+ '<br>' + '</body>';
+	var delayHTML = '<body style="width: 100%">'
+			+ '<br>'
+			+ '<form>	Insert the number which sets the amount of delay <input type="text" ng-model="tDelay"> </form>'
+			+ '<br>' + '</body>';
+	var actionType = localStorage.getItem("targetAction");
 
-	//event. layerX-offsetX, event. layerY-offsetY
+	switch (actionType) {
+	case "click":
+		document.getElementById("optionContextContainer").innerHTML = clickHTML;
+		break;
+	case "move":
+		document.getElementById("optionContextContainer").innerHTML = moveHTML;
+		break;
+	case "timeDelay":
+		document.getElementById("optionContextContainer").innerHTML = delayHTML;
+		break;
+	default:
+		console.log("지원하지 않습니다");
+		break;
+	}
+
+	// jquery 사용은 가급적 피한다 ; jqery는 구시대 html의 기능에 보완제 역할을 하였고 html이 발전하면서 필요 없어짐
 </script>
 
 

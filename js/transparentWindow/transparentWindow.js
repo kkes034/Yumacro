@@ -4,7 +4,7 @@ var TRANSPARENTMODEL = angular.module('transparentModel', [ 'ngDraggable' ]);
 TRANSPARENTMODEL.controller('userCtrl', function($scope) {
 	$scope.button = false;
 	$scope.clickFlag = false;
-	
+
 	$scope.transparentBarMouseOver = function(button, event) {
 		var win = require('electron').remote.getCurrentWindow();
 		win.setIgnoreMouseEvents(false);
@@ -43,8 +43,8 @@ TRANSPARENTMODEL.controller('userCtrl', function($scope) {
 			localStorage.setItem("clickPositionFlag", "false");
 			var position = robot.getMousePos();
 			var screen = {
-				width : window.screen.width,
-				height : window.screen.height,	
+					width : window.screen.width,
+					height : window.screen.height,	
 			};
 			var robotScreen = robot.getScreenSize();
 			var windowLeft = window.screenLeft/screen.width*robotScreen.width;
@@ -76,16 +76,37 @@ function scenarioProcessingCore() {
 				clearInterval(delayCountInterval);
 			}
 			var i = 0;
+			var delayIdx = 1;
 			delayCountInterval = setInterval(function(){
-				if (i==scenario.length) {
+//				i = moveToWhere(scenario[i], i);
+//				console.log("i값은 : " + i);
+				if (i == scenario.length) {
 					clearInterval(delayCountInterval);
 				} else {
 					if (localStorage.getItem("scenarioStopFlag")=="true") {
 						clearInterval(delayCountInterval);
 					}
-					countScenario(scenario[i]);
+					// move action일 때 i 값을 바꾸기 위한 logic
+					var k = countScenario(scenario[i], i);
+
+					switch (scenario[i].action) {
+					case "move":
+						i = k;
+						break;
+					case "timeDelay":
+						if (delayIdx == k) {
+							i++;
+							delayIdx = 1;
+						}
+						else {
+							delayIdx++;
+						}
+						break;
+					default:
+						i++;
+					break;
+					}
 				}
-				i++;
 			}, 1000);
 		}
 		else {
@@ -93,7 +114,8 @@ function scenarioProcessingCore() {
 	}, 1000);
 }
 
-function countScenario(eachScenario) {
+function countScenario(eachScenario, i) {
+	var j = i;
 	var robot = require("robotjs");
 	robot.setMouseDelay(2);
 
@@ -102,7 +124,7 @@ function countScenario(eachScenario) {
 		var screen = {
 			width : window.screen.width,
 			height : window.screen.height,	
-		};
+	};
 		var robotScreen = robot.getScreenSize();
 		var windowLeft = window.screenLeft/screen.width*robotScreen.width;
 		var windowTop = window.screenTop/screen.height*robotScreen.height;
@@ -110,17 +132,17 @@ function countScenario(eachScenario) {
 		var y = parseInt(eachScenario.actionY) + windowTop;
 		robot.moveMouse(x, y);
 		robot.mouseClick();
-//		click(15,95);
-//		console.log("click(x,y)");
 		break;
 	case "move":
-		console.log("move");
+		j = parseInt(eachScenario.moveTo);
 		break;
 	case "timeDelay":
-		console.log("timeDelay");
+		j = parseInt(eachScenario.delay);
 		break;
 	default:
 		console.log("지원하지 않습니다");
 	break;
 	}
+
+	return j;
 }	

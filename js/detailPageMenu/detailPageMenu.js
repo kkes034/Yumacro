@@ -19,7 +19,8 @@ DETAILMODEL
 				id : 1,
 				name : 'time',
 				action : "timeDelay",
-				actionFlag : false
+				actionFlag : false,
+				delay : 1
 			}, {
 				id : 2,
 				name : 'image',
@@ -34,12 +35,15 @@ DETAILMODEL
 				id : 4,
 				name : 'move',
 				action : "move",
-				actionFlag : false
+				actionFlag : false,
+				moveTo : 0
 			}, {
 				id : 5,
 				name : 'click',
 				action : "click",
-				actionFlag : false
+				actionFlag : false,
+				actionX : 0,
+				actionY : 0
 			} ];
 			$scope.actions = [ {
 				id : 0,
@@ -53,7 +57,7 @@ DETAILMODEL
 				name : '',
 				action : 'move',
 				actionFlag : true,
-				moveTo : 1
+				moveTo : 0
 			}, {
 				id : 2,
 				name : '',
@@ -64,7 +68,7 @@ DETAILMODEL
 
 			localData = localDataStorage('passphrase.life');
 			localData.set("scenario", $scope.users);
-			
+
 			$scope.colorReset = function() {
 				var j = 0;
 				for (j; j<$scope.users.length; j++) {
@@ -77,9 +81,10 @@ DETAILMODEL
 				$scope.colorReset();
 				document.getElementById("detailCell_"+index.id).style.backgroundColor = "#e6e600";
 			};
-			
-			$scope.editOption = function(id) {
-				localStorage.setItem("targetId",id);
+
+			$scope.editOption = function(index) {
+				localStorage.setItem("targetId",index.id);
+				localStorage.setItem("targetAction",index.action);
 				window
 				.open(
 						"../../html/detailPageMenu/detailPageMenuOption.html",
@@ -88,12 +93,16 @@ DETAILMODEL
 			};
 
 			$scope.detailDropComplete = function(idx, data, event) {
+				localData = localDataStorage( 'passphrase.life' );
+				scenario = localData.get("scenario");
+				$scope.users = scenario;
+				
 				var dropId = $scope.users[idx].id;
 				var actionsLength = $scope.actions.length;
 				var usersLength = $scope.users.length;
 				$scope.dropId = dropId; // 이후에 dialog에서 값을 가져오기 위함
 				var a = DETAILMODEL.controller.$scope;
-				
+
 				if (event.x > window.innerWidth*0.7) {
 					var i = data.id + 1;
 					for (i; i < usersLength; i++) {
@@ -134,8 +143,9 @@ DETAILMODEL
 						case "click":
 							$scope.users[usersLength].actionX = event.data.actionX;
 							$scope.users[usersLength].actionY = event.data.actionY;
+							break;
 						case "move":
-							$scope.users[usersLength].toMove = event.data.toMove;
+							$scope.users[usersLength].moveTo = event.data.moveTo;
 							break;
 						case "timeDelay":
 							$scope.users[usersLength].delay = event.data.delay;
@@ -146,7 +156,7 @@ DETAILMODEL
 						}					
 						showDialog();
 					}
-					
+
 				}
 
 				sortingArray();
@@ -174,11 +184,15 @@ DETAILMODEL
 
 			$scope.startScenario = function() {
 				$scope.colorReset();
+				localData = localDataStorage( 'passphrase.life' );
+				scenario = localData.get("scenario");
+				$scope.users = scenario;
 				localStorage.setItem("scenarioStartFlag", "true");
 
 				var i = 0;
 				var delayTime = 1;
 				var colorSwitch = true;
+				var delayIdx = 1;
 //				start 상태에서 또 start 눌렀을 경우 기존 event 종료 및 색깔 초기화
 				if ($scope.timeDelayInterval != undefined) {
 					var j = 0;
@@ -189,20 +203,36 @@ DETAILMODEL
 					clearInterval($scope.timeDelayInterval);
 				}
 //				색깔 count 시작
+				
 				$scope.timeDelayInterval = setInterval(function(){
 					if (localStorage.getItem("scenarioStopFlag")=="true") {
 						clearInterval($scope.timeDelayInterval);
 						localStorage.setItem("scenarioStopFlag","false");
 						colorSwitch = false;
-					} 
+					}
 					if (i > $scope.users.length-1) {
 						document.getElementById("detailCell_"
 								+ $scope.users[i - 1].id).style.backgroundColor = "#e0e0eb";
 						clearInterval($scope.timeDelayInterval);
+						return;
 					} else {
-						$scope.countScenario(i,colorSwitch);
+						$scope.countScenario(i,colorSwitch,scenario[i].action);
 					}
-					i++;
+					if (scenario[i].action == "move") {
+						i = parseInt(scenario[i].moveTo);
+					}
+					else if (scenario[i].action == "timeDelay") {
+						if (delayIdx == parseInt(scenario[i].delay)) {
+							i++;
+							delayIdx = 1;
+						}
+						else {
+							delayIdx++;
+						}
+					}
+					else {
+						i++;
+					}
 				},1000*delayTime);
 
 //				아래는 setInterval이 아닌 setTimeout으로 구현하였을 때
@@ -222,7 +252,10 @@ DETAILMODEL
 //				timeDelayInterval();
 			};
 
-			$scope.countScenario = function(i,colorSwitch) {
+			$scope.countScenario = function(i,colorSwitch,action) {
+				if (action == "move") {
+					$scope.colorReset();
+				}
 				if (i !== 0) {
 					document.getElementById("detailCell_"
 							+ $scope.users[i - 1].id).style.backgroundColor = "#e0e0eb";
@@ -236,6 +269,7 @@ DETAILMODEL
 			};
 
 			$scope.stopScenario = function(data, event) {
+				$scope.colorReset();
 				localData = localDataStorage( 'passphrase.life' );
 				localStorage.setItem("scenarioStopFlag", "true");
 			};
